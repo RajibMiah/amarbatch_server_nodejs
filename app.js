@@ -6,6 +6,7 @@ const orderRouter = require('./api/routers/orders')
 
 app.use('/products' , productRoutes)
 app.use('/orders', orderRouter)
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
