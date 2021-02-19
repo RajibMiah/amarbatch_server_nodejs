@@ -7,22 +7,28 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-  res.status(200).send('handling post reqeust form orders')
+  const order = {
+    orderId: req.body.name,
+    qunatity: req.body.qunatity
+  }
+  res.status(201).json({
+    msg: "Order was created",
+    order
+  })
 })
 
 router.post('/orderId', (req, res, next) => {
-  const id =   req.params.orderId
-  req.status(200).send(id)
+
 })
 
 router.patch('/orderId', (req, res, next) => {
-  const id =   req.params.orderId
+  const id = req.params.orderId
   req.status(200).send(id)
 })
 
 
 router.delete('/productId', (req, res, next) => {
-  const id =   req.params.productId
+  const id = req.params.productId
   req.status(200).send(id)
 })
 
