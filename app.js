@@ -7,11 +7,13 @@ const mongoose = require('mongoose');
 const port = 3000
 const productRoutes = require('./api/routers/product')
 const orderRouter = require('./api/routers/orders')
-try {
-   mongoose.connect('mongodb://amarbatch:12345@amarbatch.xnfl5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true , useUnifiedTopology: true });
-} catch (error) {
-  handleError(error);
-}
+
+mongoose.connect('mongodb://localhost:27017/amarbatch', {useNewUrlParser: true,useUnifiedTopology: true});
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+   console.log('db connected')
+});
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
