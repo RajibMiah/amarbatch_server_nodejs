@@ -8,25 +8,31 @@ const port = 3000
 const productRoutes = require('./api/routers/product')
 const orderRouter = require('./api/routers/orders')
 
-mongoose.connect('mongodb://localhost:27017/amarbatch', {useNewUrlParser: true,useUnifiedTopology: true});
+mongoose.connect('mongodb://amarbatch:12345@cluster0-shard-00-00.xnfl5.mongodb.net:27017,cluster0-shard-00-01.xnfl5.mongodb.net:27017,cluster0-shard-00-02.xnfl5.mongodb.net:27017/test?replicaSet=atlas-dbloyi-shard-0&ssl=true&authSource=admin',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-   console.log('db connected')
+db.once('open', function () {
+  console.log('db connected')
 });
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-// cors handler
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-with, Content-Type,Accept ,Authorization')
-  // if(req.method === 'OPTIONS'){
-  //   res.header('Access-Control-Allow-Methods','PUT', 'POST', 'PATCH' , 'DELETE')
-  //   return res.status(200).json({})
-  // }
-})
+//#region  cors
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*')
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-with, Content-Type,Accept ,Authorization')
+//   if(req.method === 'OPTIONS'){
+//     res.header('Access-Control-Allow-Methods','PUT', 'POST', 'PATCH' , 'DELETE')
+//     return res.status(200).json({})
+//   }
+// })
+
+//#endregion
 
 app.use(morgan('dev'))
 app.use('/products', productRoutes)

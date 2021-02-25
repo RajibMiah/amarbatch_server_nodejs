@@ -13,7 +13,6 @@ router.post('/', (req, res, next) => {
        name : req.body.name,
        price : req.body.price
     })
-   console.log('hitted')
     product.save().
     then(
        (result)=>{
@@ -21,6 +20,7 @@ router.post('/', (req, res, next) => {
        }
     )
     .catch(error=>console.log(error))
+    
     res.status(201).json({
       msg: "Product was created",
       product
