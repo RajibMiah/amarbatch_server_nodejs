@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+require('dotenv').config()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
@@ -8,7 +9,7 @@ const port = 3000
 const productRoutes = require('./api/routers/product')
 const orderRouter = require('./api/routers/orders')
 
-mongoose.connect('mongodb://amarbatch:12345@cluster0-shard-00-00.xnfl5.mongodb.net:27017,cluster0-shard-00-01.xnfl5.mongodb.net:27017,cluster0-shard-00-02.xnfl5.mongodb.net:27017/test?replicaSet=atlas-dbloyi-shard-0&ssl=true&authSource=admin',
+mongoose.connect(process.env.DB_URL,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
