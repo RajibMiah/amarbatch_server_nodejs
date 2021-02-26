@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
                _id: doc._id,
                request: {
                   type: 'GET',
-                  url: 'http://localhost:3000/product/'+ doc._id
+                  url: 'http://localhost:3000/products/' + doc._id
                }
             }
             res.status(200).send(response)
@@ -37,15 +37,23 @@ router.post('/', (req, res, next) => {
    product.save().
       then(
          (result) => {
-            console.log(result)
+            res.status(201).json({
+               msg: "Product was created successfully",
+               createdProduct:{
+                  name: result.name,
+                  price: result.price,
+                  _id : result._id,
+                  request:{
+                     type:'GET',
+                     URL:'http://localhost:3000/products'+result._id
+                  }
+               }
+            })
          }
       )
       .catch(error => console.log(error))
 
-   res.status(201).json({
-      msg: "Product was created",
-      product
-   })
+
 })
 
 router.get('/:productId', (req, res, next) => {
@@ -54,7 +62,14 @@ router.get('/:productId', (req, res, next) => {
       .exec()
       .then(doc => {
          if (doc.length > 0) {
-            res.status(200).send(doc)
+            res.status(200).json({
+               product:doc,
+               request:{
+                  type:'GET',
+                  description:'you can get all products',
+                  url: 'http://localhost:3000/products/'
+               }
+            })
          } else {
             res.status(404).send('No valid entry found from provided id')
          }
@@ -76,7 +91,13 @@ router.patch('/productId', (req, res, next) => {
    })
       .exec()
       .then(result => {
-         res.status(200).send(result)
+         res.status(200).json({
+            message:'Product Updated',
+            request:{
+               type:'GET',
+               url:'http://localhost:3000'+ result._id
+            }
+         })
       })
       .catch(err => {
          res.status(500).send(err)
