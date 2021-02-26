@@ -3,7 +3,7 @@ const { route } = require('./product')
 const router = express.Router()
 const mongoose = require('mongoose')
 const Order = require('../models/order')
-const Product = require('../models/product')
+const Products = require('../models/product')
 
 router.get('/', (req, res, next) => {
   Order.find()
@@ -15,7 +15,7 @@ router.get('/', (req, res, next) => {
           orders: result,
           request: {
             type: 'GET',
-            URL: 'http://localhost:3000/product' + result._id
+            URL: 'http://localhost:3000/orders/' + result._id
           }
         })
       }
@@ -28,19 +28,19 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-  Product.findById(req.body.productId)
+  Products.findById(req.body.productId)
     .then(product => {
       if (!product) {
         return res.status(404).json({
           message: 'product is not found'
         })
       }
-      const order = new Order({
+      const Order = new Order({
         _id: mongoose.Types.ObjectId(),
         quantity: req.body.quantity,
         product: req.body.productId
       })
-      return order.save()
+      return Order.save()
     })
     .exec()
     .then(result => {
@@ -56,17 +56,17 @@ router.post('/', (req, res, next) => {
         error: err
       })
     })
-  res.status(201).json({
-    msg: "Order was created",
-    order
-  })
 })
 
 router.post('/:orderId', (req, res, next) => {
   Order.findById(req.params.orderId)
     .exec()
-    .then(doc => {
-      if (doc.length > 0) {
+    .then(order => {
+      if (!order) {
+        res.status(404).json({
+          message: "Order not found"
+        })
+      } else {
         res.status(200).json({
           order: doc,
           request: {
@@ -75,8 +75,6 @@ router.post('/:orderId', (req, res, next) => {
             url: 'http://localhost:3000/orders/'
           }
         })
-      } else {
-        res.status(404).send('No valid entry found from order id')
       }
     })
     .catch(error => {
@@ -113,15 +111,15 @@ router.patch('/:orderId', (req, res, next) => {
 router.delete('/:productId', (req, res, next) => {
   const id = req.params.orderId
   Product.remove({ _id: id })
-     .exec()
-     .then(result => {
-        res.status(200).json({
-           message:'order deleted'
-        })
-     })
-     .catch(err => {
-        res.send(404).send('No valid entry found from Order id')
-     })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        message: 'order deleted'
+      })
+    })
+    .catch(err => {
+      res.send(404).send('No valid entry found from Order id')
+    })
 
 })
 
