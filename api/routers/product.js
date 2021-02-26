@@ -80,7 +80,7 @@ router.get('/:productId', (req, res, next) => {
       })
 })
 
-router.patch('/productId', (req, res, next) => {
+router.patch('/:productId', (req, res, next) => {
    const id = req.params.productId
    const updateOps = {}
    for (const ops of req.body) {
@@ -95,7 +95,7 @@ router.patch('/productId', (req, res, next) => {
             message:'Product Updated',
             request:{
                type:'GET',
-               url:'http://localhost:3000'+ result._id
+               url:'http://localhost:3000/products/'+ result._id
             }
          })
       })
@@ -104,12 +104,14 @@ router.patch('/productId', (req, res, next) => {
       })
 })
 
-router.delete('/productId', (req, res, next) => {
+router.delete('/:productId', (req, res, next) => {
    const id = req.params.productId
    Product.remove({ _id: id })
       .exec()
       .then(result => {
-         res.status(200).send(result)
+         res.status(200).json({
+            message:'Product deleted'
+         })
       })
       .catch(err => {
          res.send(404).send('No valid entry found from provided id')
