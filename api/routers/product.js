@@ -5,10 +5,20 @@ const Product = require('../models/product')
 
 router.get('/', (req, res, next) => {
    Product.find()
+      .select('name price _id')
       .exec()
       .then(doc => {
          if (doc) {
-            res.status(200).send(doc)
+            const response = {
+               count: doc.length,
+               products: doc,
+               _id: doc._id,
+               request: {
+                  type: 'GET',
+                  url: 'http://localhost:3000/product/'+ doc._id
+               }
+            }
+            res.status(200).send(response)
          } else {
             res.status(404).send('No entry found')
          }
@@ -58,19 +68,19 @@ router.get('/:productId', (req, res, next) => {
 router.patch('/productId', (req, res, next) => {
    const id = req.params.productId
    const updateOps = {}
-   for(const ops of req.body){
+   for (const ops of req.body) {
       updateOps[ops.propName] = ops.value
    }
    Product.updateOne({ _id: id }, {
-      $set: {updateOps}
+      $set: { updateOps }
    })
-   .exec()
-   .then(result =>{
-      res.status(200).send(result)
-   })
-   .catch(err =>{
-      res.status(500).send(err)
-   })
+      .exec()
+      .then(result => {
+         res.status(200).send(result)
+      })
+      .catch(err => {
+         res.status(500).send(err)
+      })
 })
 
 router.delete('/productId', (req, res, next) => {
