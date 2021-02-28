@@ -20,6 +20,7 @@ db.once('open', function () {
   console.log('db connected')
 });
 
+app.use(express.static('/tmp/my-uploads'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
@@ -34,7 +35,6 @@ app.use(bodyParser.json())
 // })
 
 //#endregion
-
 app.use(morgan('dev'))
 app.use('/products', productRoutes)
 app.use('/orders', orderRouter)

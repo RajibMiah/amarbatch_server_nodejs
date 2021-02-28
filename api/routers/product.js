@@ -19,7 +19,7 @@ var storage = multer.diskStorage({
 
 router.get('/', (req, res, next) => {
    Product.find()
-      .select('name price _id')
+      .select('name price _id productImage')
       .exec()
       .then(doc => {
          if (doc) {
@@ -27,6 +27,7 @@ router.get('/', (req, res, next) => {
                count: doc.length,
                products: doc,
                _id: doc._id,
+               productImage: doc.productImage,
                request: {
                   type: 'GET',
                   url: 'http://localhost:3000/products/' + doc._id
@@ -46,7 +47,8 @@ router.post('/',upload.single('productImage') ,  (req, res, next) => {
    const product = Product({
       _id: mongoose.Types.ObjectId(),
       name: req.body.name,
-      price: req.body.price
+      price: req.body.price,
+      productImage: req.file.path
    })
    product.save().
       then(
@@ -57,6 +59,7 @@ router.post('/',upload.single('productImage') ,  (req, res, next) => {
                   name: result.name,
                   price: result.price,
                   _id : result._id,
+                  productImage: doc.productImage,
                   request:{
                      type:'GET',
                      URL:'http://localhost:3000/products'+result._id
