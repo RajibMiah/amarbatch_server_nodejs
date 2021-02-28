@@ -2,6 +2,20 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const Product = require('../models/product')
+const multer = require('multer')
+// const upload = multer({dest:'upload/'})
+var storage = multer.diskStorage({
+   destination: function (req, file, cb) {
+     cb(null, '/tmp/my-uploads')
+   },
+   filename: function (req, file, cb) {
+     cb(null, file.fieldname + '-' + Date.now())
+   }
+ })
+  
+ var upload = multer({ storage: storage , limits:{
+    fileSize: 1024 * 1024 * 5
+ }})
 
 router.get('/', (req, res, next) => {
    Product.find()
@@ -28,7 +42,7 @@ router.get('/', (req, res, next) => {
       })
 })
 
-router.post('/', (req, res, next) => {
+router.post('/',upload.single('productImage') ,  (req, res, next) => {
    const product = Product({
       _id: mongoose.Types.ObjectId(),
       name: req.body.name,

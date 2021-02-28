@@ -8,6 +8,7 @@ const Products = require('../models/product')
 router.get('/', (req, res, next) => {
   Order.find()
     .select('product quantity _id')
+    .populate('product name')
     .then(result => {
       if (result.length > 0) {
         res.status(200).json({
@@ -29,6 +30,7 @@ router.get('/', (req, res, next) => {
 
 router.post('/', (req, res, next) => {
   Products.findById(req.body.productId)
+    .populate('product')
     .then(product => {
       if (!product) {
         return res.status(404).json({
@@ -108,7 +110,7 @@ router.patch('/:orderId', (req, res, next) => {
 })
 
 
-router.delete('/:productId', (req, res, next) => {
+router.delete('/:orderId', (req, res, next) => {
   const id = req.params.orderId
   Product.remove({ _id: id })
     .exec()
