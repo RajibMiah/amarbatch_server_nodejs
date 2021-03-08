@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const port = 3000
 const productRoutes = require('./api/routers/product')
 const orderRouter = require('./api/routers/orders')
+const userRouter = require('./api/routers/user')
 
 mongoose.connect(process.env.DB_URL,
   {
@@ -38,6 +39,7 @@ app.use(bodyParser.json())
 app.use(morgan('dev'))
 app.use('/products', productRoutes)
 app.use('/orders', orderRouter)
+app.use('/user', userRouter)
 
 
 app.use((req, res, next) => {

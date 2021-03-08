@@ -1,7 +1,7 @@
 const express = require('express')
-const { route } = require('./product')
 const router = express.Router()
 const mongoose = require('mongoose')
+const { route } = require('./product')
 const Order = require('../models/order')
 const Products = require('../models/product')
 
