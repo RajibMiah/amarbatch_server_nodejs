@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const { route } = require('./product')
 const Order = require('../models/order')
 const Products = require('../models/product')
+const checkAuth = require('../middleware/check-auth')
 
 router.get('/', (req, res, next) => {
   Order.find()
@@ -60,7 +61,7 @@ router.post('/', (req, res, next) => {
     })
 })
 
-router.post('/:orderId', (req, res, next) => {
+router.post('/:orderId',checkAuth,  (req, res, next) => {
   Order.findById(req.params.orderId)
     .exec()
     .then(order => {
@@ -85,7 +86,7 @@ router.post('/:orderId', (req, res, next) => {
     })
 })
 
-router.patch('/:orderId', (req, res, next) => {
+router.patch('/:orderId', checkAuth, (req, res, next) => {
   const id = req.params.orderId
   const updateOps = {}
   for (const ops of req.body) {
@@ -110,7 +111,7 @@ router.patch('/:orderId', (req, res, next) => {
 })
 
 
-router.delete('/:orderId', (req, res, next) => {
+router.delete('/:orderId', checkAuth, (req, res, next) => {
   const id = req.params.orderId
   Product.remove({ _id: id })
     .exec()
