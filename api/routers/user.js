@@ -5,7 +5,33 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt');
 
 router.post('/signin', (req, res, next) => {
-
+  User.findOne({ email: req.body.email })
+    .exec()
+    .then(user => {
+      if (user.length < 1) {
+        return res.status(404).json({
+          message: "Auth Failed"
+        })
+      }
+      bcrypt.compare(req.body.password, user.password , (err , result) =>{
+        if(err){
+          return res.status(401).json({
+            message:'auth failed'
+          })
+        }
+        if(result){
+          res.status(200).json({
+            message:'login successfull'
+          })
+        }
+       res.status(401).json({
+          message:'auth failed'
+        })
+      })
+    })
+    .catch(err => {
+      error: err
+    })
 })
 
 router.post('/signup', (req, res, next) => {
