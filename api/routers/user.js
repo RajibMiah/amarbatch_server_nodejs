@@ -53,7 +53,7 @@ router.post('/signup', (req, res, next) => {
   User.find({ classId: req.body.classId })
     .exec()
     .then(user => {
-      if (user.length >= 1 ) {
+      if (user.length >= 1) {
         console.log('user', user)
         res.status(409).json({
           message: "class id is already exist",
@@ -63,7 +63,7 @@ router.post('/signup', (req, res, next) => {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           if (err) {
             res.status(500).json({
-               error: err,
+              error: err,
             })
           } else {
             const user = new User({
@@ -76,14 +76,23 @@ router.post('/signup', (req, res, next) => {
             })
             user.save()
               .then(result => {
+                const token = jwt.sign({
+                  email: user.email,
+                  id: user._id
+                },
+                  process.env.JWT_SECRET,
+                  { expiresIn: '1h' }
+                );
                 res.status(201).json({
                   message: 'user created',
-                  code: 'SUCCESS'
+                  code: 'SUCCESS',
+                  token: token
                 })
               })
               .catch(err => {
                 res.status(500).json({
-                  error: err
+                  message: 'internal server error',
+                  code: 'UNAUTHORIZED'
                 })
               })
           }
@@ -93,7 +102,7 @@ router.post('/signup', (req, res, next) => {
     )
     .catch(err => {
       res.status(401).json({
-        error:err
+        error: err
       })
     })
 })
