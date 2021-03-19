@@ -7,11 +7,11 @@ var jwt = require('jsonwebtoken');
 
 router.post('/signin', (req, res, next) => {
   console.log('signin---->>', req.body)
-  User.findOne({ classId: req.body.classId })
+  User.findOne({ classId : req.body.classId })
     .exec()
     .then(user => {
       if (user.length < 1) {
-        return res.status(404).json({
+        return res.status(401).json({
           message: "Auth Failed",
           code: 'UNAUTHORIZED'
         })
