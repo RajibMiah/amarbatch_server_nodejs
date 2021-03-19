@@ -6,18 +6,21 @@ const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 
 router.post('/signin', (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  console.log('signin---->>', req.body)
+  User.findOne({ classId: req.body.classId })
     .exec()
     .then(user => {
       if (user.length < 1) {
         return res.status(404).json({
-          message: "Auth Failed"
+          message: "Auth Failed",
+          code: 'UNAUTHORIZED'
         })
       }
       bcrypt.compare(req.body.password, user.password, (err, result) => {
         if (err) {
           return res.status(401).json({
-            message: 'auth failed'
+            message: 'auth failed',
+            code: 'UNAUTHORIZED'
           })
         }
         if (result) {
@@ -31,7 +34,8 @@ router.post('/signin', (req, res, next) => {
 
           res.status(200).json({
             message: 'login successfull',
-            token: token
+            token: token,
+            code: 'SUCCESS'
           })
         }
         res.status(401).json({
@@ -40,34 +44,41 @@ router.post('/signin', (req, res, next) => {
       })
     })
     .catch(err => {
-      error: err
+      console.log("error", err)
     })
 })
 
 router.post('/signup', (req, res, next) => {
-  User.find({ email: req.body.email })
+  console.log('signup---->>', req.body)
+  User.find({ classId: req.body.classId })
     .exec()
     .then(user => {
-      if (user.length >= 1) {
+      if (user.length >= 1 ) {
+        console.log('user', user)
         res.status(409).json({
-          message: "email exist"
+          message: "class id is already exist",
+          code: 'UNAUTHORIZED'
         })
       } else {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           if (err) {
             res.status(500).json({
-              error: err
+               error: err,
             })
           } else {
             const user = new User({
               _id: mongoose.Types.ObjectId(),
               email: req.body.email,
+              userName: req.body.userName,
+              classId: req.body.classId,
+              phoneNo: req.body.phoneNo,
               password: hash
             })
             user.save()
               .then(result => {
                 res.status(201).json({
-                  message: 'user created'
+                  message: 'user created',
+                  code: 'SUCCESS'
                 })
               })
               .catch(err => {
@@ -80,6 +91,11 @@ router.post('/signup', (req, res, next) => {
       }
     }
     )
+    .catch(err => {
+      res.status(401).json({
+        error:err
+      })
+    })
 })
 
 router.delete('/:userId', (req, res, next) => {

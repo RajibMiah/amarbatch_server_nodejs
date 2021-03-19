@@ -5,7 +5,7 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 
-const port = 3000
+const port =  4000
 const productRoutes = require('./api/routers/product')
 const orderRouter = require('./api/routers/orders')
 const userRouter = require('./api/routers/user')
@@ -25,15 +25,16 @@ app.use(express.static('/tmp/my-uploads'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-//#region  cors
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*')
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-with, Content-Type,Accept ,Authorization')
-//   if(req.method === 'OPTIONS'){
-//     res.header('Access-Control-Allow-Methods','PUT', 'POST', 'PATCH' , 'DELETE')
-//     return res.status(200).json({})
-//   }
-// })
+// #region  cors
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-with, Content-Type,Accept ,Authorization')
+  if(req.method === 'OPTIONS'){
+    // res.header('Access-Control-Allow-Methods','PUT', 'POST', 'PATCH' , 'DELETE')
+    return res.status(200).json({})
+  }
+  next()
+})
 
 //#endregion
 app.use(morgan('dev'))
