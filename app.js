@@ -5,10 +5,11 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
 
-const port =  4000
+const port = 4000
 const productRoutes = require('./api/routers/product')
 const orderRouter = require('./api/routers/orders')
 const userRouter = require('./api/routers/user')
+const profileRouter = require('./api/routers/profile')
 
 mongoose.connect(process.env.DB_URL,
   {
@@ -29,7 +30,7 @@ app.use(bodyParser.json())
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-with, Content-Type,Accept ,Authorization')
-  if(req.method === 'OPTIONS'){
+  if (req.method === 'OPTIONS') {
     // res.header('Access-Control-Allow-Methods','PUT', 'POST', 'PATCH' , 'DELETE')
     return res.status(200).json({})
   }
@@ -38,9 +39,10 @@ app.use((req, res, next) => {
 
 //#endregion
 app.use(morgan('dev'))
-app.use('/products', productRoutes)
-app.use('/orders', orderRouter)
+// app.use('/products', productRoutes)
+// app.use('/orders', orderRouter)
 app.use('/user', userRouter)
+app.use('/profile', profileRouter)
 
 
 app.use((req, res, next) => {

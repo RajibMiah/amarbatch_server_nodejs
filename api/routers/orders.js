@@ -61,7 +61,7 @@ router.post('/', (req, res, next) => {
     })
 })
 
-router.post('/:orderId',checkAuth,  (req, res, next) => {
+router.post('/:orderId', checkAuth.jwtAuth, (req, res, next) => {
   Order.findById(req.params.orderId)
     .exec()
     .then(order => {
@@ -86,7 +86,7 @@ router.post('/:orderId',checkAuth,  (req, res, next) => {
     })
 })
 
-router.patch('/:orderId', checkAuth, (req, res, next) => {
+router.patch('/:orderId', checkAuth.jwtAuth, (req, res, next) => {
   const id = req.params.orderId
   const updateOps = {}
   for (const ops of req.body) {
@@ -111,7 +111,7 @@ router.patch('/:orderId', checkAuth, (req, res, next) => {
 })
 
 
-router.delete('/:orderId', checkAuth, (req, res, next) => {
+router.delete('/:orderId',checkAuth.jwtAuth, (req, res, next) => {
   const id = req.params.orderId
   Product.remove({ _id: id })
     .exec()

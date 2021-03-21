@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    bio: {
+        type: String,
+    },
+    education: {
+        type: String,
+    }
 });
 
 module.exports = mongoose.model('User', userSchema)
