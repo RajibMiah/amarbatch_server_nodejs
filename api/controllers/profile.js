@@ -2,6 +2,7 @@
 const mongoose = require('mongoose')
 const User = require('../models/user')
 
+
 exports.profileInfo = async (req, res, next) => {
   try {
     console.log('userid', req.userData.id)
@@ -11,6 +12,7 @@ exports.profileInfo = async (req, res, next) => {
         message: 'user profile fatched',
         code: 'SUCCESS',
         data: {
+          profileImage: profile.profile,
           userName: profile.userName,
           email: profile.email,
           phoneNo: profile.phoneNo,
@@ -29,13 +31,13 @@ exports.profileInfo = async (req, res, next) => {
 exports.profileEdit = async (req, res, next) => {
   console.log("reqeust body", req.body)
   try {
-    
+
     const result = await User.findByIdAndUpdate(req.userData.id, {
       $set: req.body
     })
-    console.log('result', result)
+    // console.log('result', result)
     res.status(200).json({
-      msg:'SUCCESS'
+      msg: 'SUCCESS'
     })
   }
   catch (error) {
@@ -43,4 +45,24 @@ exports.profileEdit = async (req, res, next) => {
       Error: error,
     })
   }
+}
+
+exports.uploadProfile = async(req, res, next) => {
+  console.log("path"  , req.file.path)
+  try {
+    const result = await User.findByIdAndUpdate(req.userData.id, {
+      $set:{profile: req.file.path} 
+    })
+    res.status(200).json({
+       msg:"success",
+       result
+    })
+  } catch (error) {
+    console.log('error' , error)
+    res.status(500).json({
+      error: error,
+      msg:'not uploaded'
+    })
+  }
+  
 }

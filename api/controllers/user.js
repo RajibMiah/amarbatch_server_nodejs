@@ -5,6 +5,8 @@ const mongoose = require('mongoose')
 const User = require('../models/user')
 const bcrypt = require('bcrypt');
 const checkAuth = require("../middleware/check-auth")
+const multer = require('multer')
+// const upload = multer({dest:'upload/'})
 
 exports.signin = async (req, res, next) => {
   const user = await User.findOne({ classId: req.body.classId })
